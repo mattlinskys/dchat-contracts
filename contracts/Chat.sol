@@ -48,6 +48,10 @@ contract Chat is Customizable {
         _transferOwnership(owner);
     }
 
+    function membersCount() public view returns (uint256) {
+        return members.length();
+    }
+
     function sendMsg(string memory data, uint256 replyTo) public onlyMember {
         idCounter.increment();
         uint256 id = idCounter.current();
