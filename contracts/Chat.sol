@@ -52,6 +52,10 @@ contract Chat is Customizable {
         return members.length();
     }
 
+    function membersValues() public view returns (address[] memory) {
+        return members.values();
+    }
+
     function sendMsg(string memory data, uint256 replyTo) public onlyMember {
         idCounter.increment();
         uint256 id = idCounter.current();

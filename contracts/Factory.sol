@@ -22,13 +22,14 @@ contract Factory {
 
     function createProfile(
         bytes32 name,
+        bytes memory encryptionPublicKey,
         bytes32[] memory keys,
         string[] memory values
     ) external {
         require(address(profiles[msg.sender]) == address(0));
         require(name != 0);
 
-        Profile profile = new Profile(name);
+        Profile profile = new Profile(name, encryptionPublicKey);
         profile.setCustomKeys(keys, values);
         profile.transferOwnership(msg.sender);
         profiles[msg.sender] = profile;
