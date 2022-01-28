@@ -4,14 +4,16 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Customizable.sol";
+import "hardhat/console.sol";
 
 contract Chat is Customizable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using Counters for Counters.Counter;
 
-    event MsgSent(uint256 indexed id, address indexed sender);
     event MemberAdded(address indexed member);
     event MemberRemoved(address indexed member);
+    event MsgSent(uint256 indexed id, address indexed sender);
+    event MsgRemoved(uint256 indexed id, address indexed sender);
 
     struct Message {
         uint256 id;
@@ -84,11 +86,12 @@ contract Chat is Customizable {
         emit MsgSent(id, msg.sender);
     }
 
-    function sendCipherMsg(bytes[] memory ciphertexts, uint256 replyTo)
-        public
-        onlyMember
-    {
-        require(members.length() == ciphertexts.length);
+    function sendCipherMsg(
+        address[] calldata addresses,
+        bytes[] calldata ciphertexts,
+        uint256 replyTo
+    ) public onlyMember {
+        require(addresses.length == ciphertexts.length);
 
         msgIdCounter.increment();
         uint256 id = msgIdCounter.current();
@@ -101,12 +104,19 @@ contract Chat is Customizable {
         message.encrypted = true;
 
         messages[id] = message;
-        for (uint256 i = 0; i < ciphertexts.length; i++) {
+        for (uint256 i = 0; i < addresses.length; i++) {
             messagesCiphertext[
-                keccak256(abi.encodePacked(id, members.at(i)))
+                keccak256(abi.encodePacked(id, addresses[i]))
             ] = ciphertexts[i];
         }
 
         emit MsgSent(id, msg.sender);
+    }
+
+    function removeMsg(uint256 id) public {
+        require(msg.sender == messages[id].sender);
+
+        delete messages[id];
+        emit MsgRemoved(id, msg.sender);
     }
 }
