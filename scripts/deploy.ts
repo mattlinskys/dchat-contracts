@@ -7,6 +7,24 @@ const main = async () => {
   await factory.deployed();
 
   console.log("Factory deployed at", colors.blue(factory.address));
+
+  await (
+    await factory.createProfile(
+      ethers.utils.formatBytes32String("Matt"),
+      ethers.utils.randomBytes(44),
+      [],
+      []
+    )
+  ).wait();
+
+  const [signer] = await ethers.getSigners();
+  const profile = await factory.profiles(signer.address);
+  console.log(
+    "Profile created at",
+    colors.blue(profile),
+    "for",
+    colors.green(signer.address)
+  );
 };
 
 main()

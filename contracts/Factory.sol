@@ -37,8 +37,7 @@ contract Factory {
         emit ProfileCreated(address(profile), msg.sender, name);
     }
 
-    function createChat(address[] memory members) external {
-        bytes32 id = keccak256(abi.encodePacked(members));
+    function createChat(bytes32 id, address[] memory members) external {
         require(address(chats[id]) == address(0));
 
         Chat chat = new Chat(msg.sender, members);
