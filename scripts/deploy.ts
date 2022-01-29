@@ -1,5 +1,6 @@
 import { ethers } from "hardhat";
 import colors from "colors";
+import nacl from "tweetnacl";
 
 const main = async () => {
   const Factory = await ethers.getContractFactory("Factory");
@@ -8,16 +9,19 @@ const main = async () => {
 
   console.log("Factory deployed at", colors.blue(factory.address));
 
+  const [signer] = await ethers.getSigners();
+
   await (
     await factory.createProfile(
       ethers.utils.formatBytes32String("Matt"),
-      ethers.utils.randomBytes(44),
-      [],
-      []
+      nacl.box.keyPair.fromSecretKey(
+        ethers.utils.arrayify(
+          "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+        )
+      ).publicKey
     )
   ).wait();
 
-  const [signer] = await ethers.getSigners();
   const profile = await factory.profiles(signer.address);
   console.log(
     "Profile created at",

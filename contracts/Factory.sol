@@ -20,17 +20,11 @@ contract Factory {
     mapping(address => Profile) public profiles;
     mapping(bytes32 => Chat) public chats;
 
-    function createProfile(
-        bytes32 name,
-        bytes memory encryptionPublicKey,
-        bytes32[] memory keys,
-        string[] memory values
-    ) external {
+    function createProfile(bytes32 name, bytes32 encryptionPublicKey) external {
         require(address(profiles[msg.sender]) == address(0));
         require(name != 0);
 
         Profile profile = new Profile(name, encryptionPublicKey);
-        profile.setCustomKeys(keys, values);
         profile.transferOwnership(msg.sender);
         profiles[msg.sender] = profile;
 

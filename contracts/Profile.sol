@@ -8,13 +8,11 @@ contract Profile is Customizable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 public name;
-    bytes public encryptionPublicKey;
+    bytes32 public encryptionPublicKey;
 
     // EnumerableSet.AddressSet followedChats;
 
-    constructor(bytes32 _name, bytes memory _encryptionPublicKey) {
-        require(_encryptionPublicKey.length == 44);
-
+    constructor(bytes32 _name, bytes32 _encryptionPublicKey) {
         name = _name;
         encryptionPublicKey = _encryptionPublicKey;
     }
@@ -24,7 +22,7 @@ contract Profile is Customizable {
         view
         returns (
             bytes32,
-            bytes memory,
+            bytes32,
             string memory
         )
     {
