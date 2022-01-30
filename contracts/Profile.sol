@@ -17,19 +17,7 @@ contract Profile is Customizable {
         encryptionPublicKey = _encryptionPublicKey;
     }
 
-    function profile()
-        public
-        view
-        returns (
-            bytes32,
-            bytes32,
-            string memory
-        )
-    {
-        return (
-            name,
-            encryptionPublicKey,
-            getCustomKey(keccak256("avatarUrl"))
-        );
+    function updateName(bytes32 _name) public onlyOwner {
+        name = _name;
     }
 }
