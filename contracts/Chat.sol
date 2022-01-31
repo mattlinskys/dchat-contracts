@@ -54,7 +54,7 @@ contract Chat is Customizable {
         return members.length();
     }
 
-    function membersValues() public view returns (address[] memory) {
+    function membersAccounts() public view returns (address[] memory) {
         return members.values();
     }
 

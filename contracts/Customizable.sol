@@ -47,4 +47,8 @@ abstract contract Customizable is Ownable {
             _customKeys[keys[i]] = values[i];
         }
     }
+
+    function destroy() public onlyOwner {
+        selfdestruct(payable(owner()));
+    }
 }
