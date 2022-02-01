@@ -8,6 +8,7 @@ import "hardhat/console.sol";
 
 contract Chat is Customizable {
     using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableSet for EnumerableSet.UintSet;
     using Counters for Counters.Counter;
 
     event MemberAdded(address indexed member);
@@ -21,13 +22,13 @@ contract Chat is Customizable {
         uint256 replyTo;
         address sender;
         string data;
-        bool encrypted;
     }
 
     EnumerableSet.AddressSet members;
 
     Counters.Counter public msgIdCounter;
     mapping(uint256 => Message) public messages;
+    EnumerableSet.UintSet messagesKeys;
     mapping(bytes32 => bytes) public messagesCiphertext;
 
     modifier onlyMember() {
@@ -70,20 +71,21 @@ contract Chat is Customizable {
         emit MemberRemoved(member);
     }
 
-    function sendMsg(string memory data, uint256 replyTo) public onlyMember {
-        msgIdCounter.increment();
-        uint256 id = msgIdCounter.current();
+    function messagesCount() public view returns (uint256) {
+        return messagesKeys.length();
+    }
 
-        Message memory message;
-        message.id = id;
-        message.time = block.timestamp;
-        message.replyTo = replyTo;
-        message.sender = msg.sender;
-        message.data = data;
+    function paginateMessages(uint256 skip, uint256 take)
+        public
+        view
+        returns (Message[] memory)
+    {
+        Message[] memory _messages = new Message[](take);
+        for (uint256 i; i < take; i++) {
+            _messages[i] = messages[messagesKeys.at(i + skip)];
+        }
 
-        messages[id] = message;
-
-        emit MsgSent(id, msg.sender);
+        return _messages;
     }
 
     function sendCipherMsg(
@@ -101,9 +103,10 @@ contract Chat is Customizable {
         message.time = block.timestamp;
         message.replyTo = replyTo;
         message.sender = msg.sender;
-        message.encrypted = true;
 
         messages[id] = message;
+        messagesKeys.add(id);
+
         for (uint256 i = 0; i < addresses.length; i++) {
             messagesCiphertext[
                 keccak256(abi.encodePacked(id, addresses[i]))
@@ -117,6 +120,8 @@ contract Chat is Customizable {
         require(msg.sender == messages[id].sender);
 
         delete messages[id];
+        messagesKeys.remove(id);
+
         emit MsgRemoved(id, msg.sender);
     }
 }
