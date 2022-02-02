@@ -21,7 +21,6 @@ contract Chat is Customizable {
         uint256 time;
         uint256 replyTo;
         address sender;
-        string data;
     }
 
     EnumerableSet.AddressSet members;
