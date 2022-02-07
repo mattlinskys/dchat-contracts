@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Customizable.sol";
-import "hardhat/console.sol";
 
 contract Chat is Customizable {
     using EnumerableSet for EnumerableSet.AddressSet;
