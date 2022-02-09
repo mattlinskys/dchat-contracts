@@ -38,7 +38,7 @@ contract Factory {
     }
 
     function createChat(bytes32 id, address[] memory members) external {
-        require(address(chats[id]) == address(0));
+        require(address(chats[id]) == address(0), "taken");
 
         Chat chat = new Chat(msg.sender, members);
         chats[id] = chat;
