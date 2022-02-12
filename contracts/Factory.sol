@@ -19,7 +19,7 @@ contract Factory {
     mapping(bytes32 => Chat) public chats;
 
     function createProfile(bytes32 name, bytes32 encryptionPublicKey) external {
-        require(address(profiles[msg.sender]) == address(0));
+        require(address(profiles[msg.sender]) == address(0), "already-created");
         require(name != 0);
 
         Profile profile = new Profile(name, encryptionPublicKey);
@@ -38,7 +38,7 @@ contract Factory {
     }
 
     function createChat(bytes32 id, address[] memory members) external {
-        require(address(chats[id]) == address(0), "taken");
+        require(address(chats[id]) == address(0), "id-taken");
 
         Chat chat = new Chat(msg.sender, members);
         chats[id] = chat;

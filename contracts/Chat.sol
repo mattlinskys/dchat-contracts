@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Customizable.sol";
 
-contract Chat is Customizable {
+contract Chat is Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.UintSet;
     using Counters for Counters.Counter;
@@ -121,5 +121,9 @@ contract Chat is Customizable {
         messagesKeys.remove(id);
 
         emit MsgRemoved(id, msg.sender);
+    }
+
+    function destroy() public onlyOwner {
+        selfdestruct(payable(owner()));
     }
 }
