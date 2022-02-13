@@ -57,13 +57,13 @@ contract Chat is Ownable {
         return members.values();
     }
 
-    function addMember(address member) public onlyOwner {
+    function addMember(address member) external onlyOwner {
         require(members.add(member));
 
         emit MemberAdded(member);
     }
 
-    function removeMember(address member) public onlyOwner {
+    function removeMember(address member) external onlyOwner {
         require(members.remove(member));
 
         emit MemberRemoved(member);
@@ -90,7 +90,7 @@ contract Chat is Ownable {
         address[] calldata addresses,
         bytes[] calldata ciphertexts,
         uint256 replyTo
-    ) public onlyMember {
+    ) external onlyMember {
         require(addresses.length == ciphertexts.length);
 
         msgIdCounter.increment();
@@ -114,7 +114,7 @@ contract Chat is Ownable {
         emit MsgSent(id, msg.sender);
     }
 
-    function removeMsg(uint256 id) public {
+    function removeMsg(uint256 id) external {
         require(msg.sender == messages[id].sender);
 
         delete messages[id];
@@ -123,7 +123,7 @@ contract Chat is Ownable {
         emit MsgRemoved(id, msg.sender);
     }
 
-    function destroy() public onlyOwner {
+    function destroy() external onlyOwner {
         selfdestruct(payable(owner()));
     }
 }

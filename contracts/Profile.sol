@@ -15,11 +15,11 @@ contract Profile is Ownable {
         encryptionPublicKey = _encryptionPublicKey;
     }
 
-    function updateName(bytes32 _name) public onlyOwner {
+    function updateName(bytes32 _name) external onlyOwner {
         name = _name;
     }
 
-    function destroy() public onlyOwner {
+    function destroy() external onlyOwner {
         selfdestruct(payable(owner()));
     }
 }
