@@ -9,7 +9,10 @@ task("gen-abi", "Generate ABI fragments")
   .setAction(async ({ dir }: { dir: string }, hre) => {
     const artifactNames = await hre.artifacts.getAllFullyQualifiedNames();
     const filteredNames = artifactNames.filter(
-      (name) => !name.startsWith("@openzeppelin")
+      (name) =>
+        !name.startsWith("@openzeppelin") &&
+        !name.endsWith("Multicall2") &&
+        !name.endsWith("console")
     );
     const writeDir = dir.startsWith("/") ? dir : path.join(process.cwd(), dir);
 
